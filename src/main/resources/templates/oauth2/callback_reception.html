@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <style>
+        .result-block {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-block">
+        <h2>Query 部分返回值</h2>
+        <p th:text="'Code: ' + ${code}"/>
+        <p th:text="'State: ' + ${state}" />
+    </div>
+    <div class="result-block">
+        <h2>通过 CODE 向大搜车开放平台置换得到的用户信息</h2>
+    </div>
+</body>
+</html>
