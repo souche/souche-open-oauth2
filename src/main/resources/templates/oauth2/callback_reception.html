@@ -8,7 +8,19 @@
         .result-block {
             text-align: center;
         }
+        .code-block {
+            width: 550px;
+            text-align: initial;
+        }
+        .code-pre {
+            display: flex;
+            justify-content: center;
+        }
     </style>
+
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
 </head>
 <body>
     <div class="result-block">
@@ -18,6 +30,24 @@
     </div>
     <div class="result-block">
         <h2>通过 CODE 向大搜车开放平台置换得到的用户信息</h2>
+        <pre class="code-pre">
+            <code th:text="${rtnBody}" class="code-block" lang="json"></code>
+        </pre>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+                if(block.lang === 'json') {
+                    block.textContent = JSON.stringify(
+                        JSON.parse(block.textContent),
+                        null,
+                        '  '
+                    );
+                }
+                hljs.highlightBlock(block);
+            });
+        });
+    </script>
 </body>
 </html>
