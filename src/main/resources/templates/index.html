@@ -15,8 +15,9 @@
         <ul style="list-style-position: inside;">
             <li>
                 <a
-                        th:href="${host} + '/oauth2/authorize?appKey=' + ${appKey} + '&response_type=code&scope=user_ding_org_auth&state=STATE&redirect_uri=http%3A%2F%2F127.0.0.1%3A' + ${port}"
-                        th:text="'链接1：测试环境 = ' + ${host} + '，回跳地址为本地 = http://127.0.0.1:' + ${port}"></a>
+                        th:href="${host} + '/oauth2/authorize?appKey=' + ${appKey} + '&response_type=code&scope=user_ding_org_auth&state=STATE&redirect_uri=http%3A%2F%2F127.0.0.1%3A' + ${port} +
+                        '/oauth2/callback_reception'"
+                        th:text="'链接1：测试环境 = ' + ${host} + '，回跳地址为本地 = http://127.0.0.1:' + ${port} + '/oauth2/callback_reception'"></a>
             </li>
         </ul>
     </div>
