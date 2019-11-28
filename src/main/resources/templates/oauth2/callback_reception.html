@@ -16,6 +16,9 @@
             display: flex;
             justify-content: center;
         }
+        input{
+            width: 550px;
+        }
     </style>
 
     <link rel="stylesheet"
@@ -28,26 +31,126 @@
         <p th:text="'Code: ' + ${code}"/>
         <p th:text="'State: ' + ${state}" />
     </div>
+
     <div class="result-block">
-        <h2>通过 CODE 向大搜车开放平台置换得到的用户信息</h2>
-        <pre class="code-pre">
-            <code th:text="${rtnBody}" class="code-block" lang="json"></code>
-        </pre>
+        <h2>通过 CODE 向大搜车开放平台获取AccessToken</h2>
+        <input id="input_code" th:value="${code}"/>
+        <br>
+        <button id="btn_getAccessToken" >点击获取</button>
+        <p id="p_accessToken"></p>
+        <p id="p_refreshToken"></p>
+        <p id="p_codeError"></p>
+
+
     </div>
 
+    <div class="result-block">
+        <h2>通过 accessToken 向大搜车开放平台获取用户信息</h2>
+        AccessToken: <input  id="input_accessToken">
+        <br>
+        <button id="btn_getUserInfo" >点击获取</button>
+        <p id="p_userInfo"></p>
+        <p id="p_tokenError"></p>
+    </div>
+
+    <div class="result-block">
+        <h2>通过 refreshToken 刷新 accessToken </h2>
+        AccessToken: <input  id="input_accessToken_2" class="">
+        <br>
+
+        RefreshToken: <input  id="input_refreshToken">
+        <br>
+
+        <button id="btn_refreshToken" >点击刷新</button>
+        <p id="p_accessToken_new"></p>
+        <p id="p_refreshToken_new"></p>
+        <p id="p_refreshError"></p>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            document.querySelectorAll('pre code').forEach((block) => {
-                if(block.lang === 'json') {
-                    block.textContent = JSON.stringify(
-                        JSON.parse(block.textContent),
-                        null,
-                        '  '
-                    );
-                }
-                hljs.highlightBlock(block);
+
+        (function () {
+
+
+            $("#btn_getAccessToken").on("click", function (ev) {
+
+
+                var code = $("#input_code").val();
+                console.log(code)
+
+                $.ajax("/oauth2/getAccessToken?code=" + code, {
+                    method: "GET",
+                    success:function (result) {
+                        console.log(JSON.stringify(result));
+
+                        if (!result.success){
+                            $("#p_codeError").text("错误信息:" + JSON.stringify(result));
+                        }else{
+
+                            $("#p_accessToken").text("AccessToken:" + result.data.accessToken);
+                            $("#p_refreshToken").text("RefreshToken:" + result.data.refreshToken);
+
+                            $("#input_accessToken").val(result.data.accessToken);
+                            $("#input_refreshToken").val(result.data.refreshToken);
+                            $("#input_accessToken_2").val(result.data.accessToken);
+
+                            $("#p_codeError").text("");
+
+
+                        }
+                    }
+
+                })
             });
-        });
+
+
+
+            $("#btn_getUserInfo").on("click", function (ev) {
+                var token = $("#input_accessToken").val();
+                $.ajax("/oauth2/getUserInfo?accessToken=" + token, {
+                    method: "GET",
+                    success:function (result) {
+                        console.log(JSON.stringify(result));
+
+                        if (!result.success){
+                            $("#p_userInfo").text("错误信息:" +  JSON.stringify(result));
+                        }else{
+                            $("#p_userInfo").text("用户信息:" + JSON.stringify(result.data));
+                        }
+                    }
+                })
+            });
+
+            $("#btn_refreshToken").on("click", function (ev) {
+
+                var token = $("#input_accessToken").val();
+                var refreshToken = $("#input_refreshToken").val();
+                $.ajax("/oauth2/refreshToken", {
+                    method: "POST",
+                    data: {
+                      accessToken: token,
+                      refreshToken: refreshToken
+                    },
+                    success:function (result) {
+                        console.log(JSON.stringify(result));
+
+                        if (!result.success){
+                            $("#p_refreshError").text("错误信息:" + JSON.stringify(result));
+                        }else{
+
+                            $("#p_accessToken_new").text("AccessTokenNew:" + result.data.accessToken);
+                            $("#p_refreshToken_new").text("RefreshTokenNew:" + result.data.refreshToken);
+                            $("#p_refreshError").text("");
+                        }
+                    }
+                })
+            });
+
+        })()
+
     </script>
 </body>
 </html>
